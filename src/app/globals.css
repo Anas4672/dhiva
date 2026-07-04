@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(148, 163, 184, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary: #0ea5e9;
+  --accent: #f43f5e;
+  
+  --sidebar-bg: #ffffff;
+  --navbar-bg: rgba(255, 255, 255, 0.8);
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-border: rgba(148, 163, 184, 0.08);
+  --glass-bg: rgba(15, 23, 42, 0.4);
+  --glass-border: rgba(30, 41, 59, 0.5);
+  
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary: #38bdf8;
+  --accent: #f43f5e;
+  
+  --sidebar-bg: #1e293b;
+  --navbar-bg: rgba(15, 23, 42, 0.8);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-navbar-bg: var(--navbar-bg);
+  
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Base Body Styles */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-col: true;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Watermark styles */
+.watermark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.watermark-text {
+  position: absolute;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.12);
+  white-space: nowrap;
+  user-select: none;
+  transform: rotate(-30deg);
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* Copy Protection CSS */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Animated Gradient Background */
+.gradient-bg {
+  background: linear-gradient(-45deg, #4f46e5, #0ea5e9, #3b82f6, #6366f1);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

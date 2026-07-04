@@ -1,0 +1,168 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MessageStatus {
+  PENDING
+  REPLIED
+}
+
+model User {
+  id              String           @id @default(uuid())
+  name            String
+  email           String           @unique
+  passwordHash    String
+  role            Role             @default(USER)
+  emailVerified   DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  enrollments     Enrollment[]
+  paymentRequests PaymentRequest[]
+  notifications   Notification[]
+  progress        LessonProgress[]
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Course {
+  id             String           @id @default(uuid())
+  title          String
+  description    String
+  thumbnailUrl   String           // Cloudinary image URL
+  price          Float
+  instructorName String
+  instructorBio  String?
+  instructorAvatar String?
+  duration       String
+  level          String           // Beginner, Intermediate, Advanced
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  modules        Module[]
+  enrollments    Enrollment[]
+  paymentRequests PaymentRequest[]
+}
+
+model Module {
+  id        String   @id @default(uuid())
+  title     String
+  order     Int      // To sort modules
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id        String   @id @default(uuid())
+  title     String
+  videoUrl  String?  // Cloudinary video URL or YouTube URL
+  notes     String?  // Markdown/HTML content
+  pdfUrl    String?  // Cloudinary PDF URL
+  order     Int      // To sort topics inside a module
+  moduleId  String
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  progress  LessonProgress[]
+}
+
+model LessonProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+model PaymentRequest {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId        String
+  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  amount          Float
+  transactionId   String        @unique
+  screenshotUrl   String        // Cloudinary URL
+  status          PaymentStatus @default(PENDING)
+  rejectionReason String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model Message {
+  id        String        @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  reply     String?
+  status    MessageStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ContactDetails {
+  id        String   @id @default("static")
+  phone     String   @default("9894112566")
+  whatsapp  String   @default("9894112566")
+  email     String   @default("dhiva2jeeva@gmail.com")
+  telegram  String   @default("")
+  instagram String   @default("dhiva__28")
+  youtube   String   @default("")
+  facebook  String   @default("")
+  upiId     String   @default("9894112566@ybl")
+  upiQrCode String?  @default("/qr_code.png") // Default scanner override image
+  updatedAt DateTime @updatedAt
+}
